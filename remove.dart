@@ -1,49 +1,7 @@
-import 'dart:convert';
-
-import 'test_data.dart';
-import 'dart:io';
+import 'message_handler.dart';
+import 'file_handler.dart';
 
 void main() {
-  final unusedImportMapList = getImportMapList(sampleUnusedMessage);
-  File file = File(testMapList[0]['filePath']!);
-  String fileContent = file.readAsStringSync();
-  for (final testMap in testMapList) {
-    fileContent =
-        getRemoveImportStatement(fileContent, testMap['packagePath']!);
-  }
-  file.writeAsStringSync(fileContent);
-
-  print(fileContent);
-}
-
-String getRemoveImportStatement(String fileContent, String importStatement) {
-  final lines = LineSplitter.split(fileContent).toList();
-  print("remove the line 👉 import '$importStatement';");
-  lines.removeWhere((it) => it.trim() == "import '$importStatement';");
-  return lines.join('\n');
-}
-
-List<Map<String, String>> getImportMapList(String message) {
-  const filePathIndex = 2;
-  const packagePathIndex = 6;
-  final messageLines = message.split("\n");
-  messageLines.removeLast();
-
-  final List<Map<String, String>> unusedImportMapList = [];
-  for (var messageLine in messageLines) {
-    final represent = messageLine.split(' ');
-    unusedImportMapList.add({
-      'filePath': _shapeFilePath(filePath: represent[filePathIndex]),
-      'packagePath': _shapePackagePath(packagePath: represent[packagePathIndex])
-    });
-  }
-  return unusedImportMapList;
-}
-
-String _shapeFilePath({required String filePath}) {
-  return filePath.substring(0, filePath.indexOf(':'));
-}
-
-String _shapePackagePath({required String packagePath}) {
-  return packagePath.substring(0, packagePath.length - 1);
+  final fileHandler = FileHandler();
+  fileHandler.testRemoveLinesFromFile();
 }
