@@ -1,23 +1,24 @@
 import 'dart:convert';
 
 import 'test_data.dart';
-import 'dart:async';
 import 'dart:io';
 
 void main() {
   final unusedImportMapList = getImportMapList(sampleUnusedMessage);
   File file = File(testMapList[0]['filePath']!);
   String fileContent = file.readAsStringSync();
-
-  fileContent =
-      getRemoveImportStatement(fileContent, testMapList[0]['packagePath']!);
+  for (final testMap in testMapList) {
+    fileContent =
+        getRemoveImportStatement(fileContent, testMap['packagePath']!);
+  }
   file.writeAsStringSync(fileContent);
+
   print(fileContent);
 }
 
 String getRemoveImportStatement(String fileContent, String importStatement) {
   final lines = LineSplitter.split(fileContent).toList();
-  print("aaaaaaaaaaimport '$importStatement';");
+  print("remove the line 👉 import '$importStatement';");
   lines.removeWhere((it) => it.trim() == "import '$importStatement';");
   return lines.join('\n');
 }
