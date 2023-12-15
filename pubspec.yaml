@@ -1,0 +1,10 @@
+# You must to set name and define package name as connecting under score!
+name: unused_package_remover
+
+# You have to explicit sdk version.
+environment:
+  sdk: '^3.1.0'
+
+# SDK append this field automatically
+dependencies:
+  glob: ^2.1.2
