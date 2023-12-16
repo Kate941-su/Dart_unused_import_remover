@@ -7,7 +7,7 @@ import 'dart:convert';
 
 class MessageHandler {
   Future<String> getOriginalAnalyzeMessage() async {
-    var pattern = Glob('../**/*.dart');
+    var pattern = Glob('*.dart');
 /**
  * What does the one line command execute ?
 pattern: This is an instance of the Glob class from the glob package. 
@@ -22,23 +22,13 @@ whereType<File>(): This is a filtering step. It filters the list of file system 
 map((file) => file.path): This maps each File object to its path. 
               It transforms the list of File objects into a list of strings representing their paths.
  */
-
     var filePathList =
         pattern.listSync().whereType<File>().map((file) => file.path);
-
     final args = ['analyze', ...filePathList];
     final analyzeRes = await Process.run('dart', args);
-
-    final grepRes = await Process.run(
-      'grep',
-      ['Unused'],
-    );
-
-    final result = await grepRes.stdout.transform(utf8.decoder).join();
-    return result;
-
-    final analyzeError = await analyzeRes.stderr.transform(utf8.decoder).join();
-    final grepError = await grepRes.stderr.transform(utf8.decoder).join();
+    final res =
+        _grepKeyword(content: analyzeRes.stdout, keyWord: 'unused_import');
+    return res;
   }
 
   void testCreateMessage() {
@@ -46,6 +36,16 @@ map((file) => file.path): This maps each File object to its path.
     for (final line in unusedImportMapList) {
       print(line);
     }
+  }
+
+  String _grepKeyword({required String content, required String keyWord}) {
+    final strLines = LineSplitter.split(content).toList();
+    final resList = strLines.where((it) => it.contains('unused_import'));
+    String res = '';
+    resList.forEach((it) {
+      res = res + '$it\n';
+    });
+    return res;
   }
 
   List<Map<String, dynamic>> _getImportMapList(String message) {
