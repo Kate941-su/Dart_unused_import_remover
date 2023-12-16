@@ -3,6 +3,14 @@ import 'dart:io';
 import 'dart:convert';
 
 class FileHandler {
+  String _getRemoveImportStatement(String fileContent, String importStatement) {
+    final lines = LineSplitter.split(fileContent).toList();
+    print("remove the line 👉 import '$importStatement';");
+    lines.removeWhere((it) => it.trim() == "import '$importStatement';");
+    return lines.join('\n');
+  }
+
+  // test methods
   void testRemoveLinesFromFile() {
     for (Map<String, dynamic> testMap in testMapList) {
       final filePath = testMap['filePath']!;
@@ -14,12 +22,5 @@ class FileHandler {
       }
       file.writeAsStringSync(fileContent);
     }
-  }
-
-  String _getRemoveImportStatement(String fileContent, String importStatement) {
-    final lines = LineSplitter.split(fileContent).toList();
-    print("remove the line 👉 import '$importStatement';");
-    lines.removeWhere((it) => it.trim() == "import '$importStatement';");
-    return lines.join('\n');
   }
 }

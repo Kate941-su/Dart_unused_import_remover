@@ -40,13 +40,6 @@ class MessageHandler {
     return res;
   }
 
-  void testCreateMessage() {
-    final unusedImportMapList = _getImportMapList(sampleUnusedMessage);
-    for (final line in unusedImportMapList) {
-      print(line);
-    }
-  }
-
   String _grepKeyword({required String content, required String keyWord}) {
     final strLines = LineSplitter.split(content).toList();
     final resList = strLines.where((it) => it.contains('unused_import'));
@@ -103,5 +96,13 @@ class MessageHandler {
 
   String _shapePackagePath({required String packagePath}) {
     return packagePath.substring(0, packagePath.length - 1);
+  }
+
+  // test methods
+  void testCreateMessage() {
+    final unusedImportMapList = _getImportMapList(sampleUnusedMessage);
+    for (final line in unusedImportMapList) {
+      print(line);
+    }
   }
 }
