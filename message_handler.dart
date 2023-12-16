@@ -12,7 +12,13 @@ class MessageHandler {
 
   MessageHandler({this.path});
 
-  Future<String> getOriginalAnalyzeMessage() async {
+  Future<List> createUnusedMapList() async {
+    final analyzedMessage = await getAnalyzedMessage();
+    final unusedImportMapList = _getImportMapList(analyzedMessage);
+    return unusedImportMapList;
+  }
+
+  Future<String> getAnalyzedMessage() async {
     var pattern = Glob('../$_suffixPath');
     if (path != null) {
       pattern = Glob('$path' + '$_suffixPath');

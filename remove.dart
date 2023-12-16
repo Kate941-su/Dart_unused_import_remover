@@ -13,8 +13,9 @@ void main(List<String> args) async {
   } else {
     messageHandler = MessageHandler();
   }
-  final res = await messageHandler.getOriginalAnalyzeMessage();
-  print(res);
+  // final res = await messageHandler.getAnalyzedMessage();
+  final res = await messageHandler.createUnusedMapList();
+  print('remove.dart::result : $res');
   // FileHandler().testRemoveLinesFromFile();
   // MessageHandler().testCreateMessage();
 }
