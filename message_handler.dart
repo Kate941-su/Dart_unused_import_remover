@@ -4,6 +4,8 @@ import 'package:glob/glob.dart';
 import 'dart:convert';
 
 const String _suffixPath = '/**.dart';
+const int _filePathIndex = 2;
+const int _packagePathIndex = 6;
 
 class MessageHandler {
   String? path;
@@ -26,49 +28,56 @@ class MessageHandler {
     return true;
   }
 
+  /**
+   * What does the one line command execute ?
+      pattern: This is an instance of the Glob class from the glob package. 
+              It represents a pattern for matching file paths.
+
+      listSync(): This method is called on the Glob instance (pattern) and returns a list of file system entities (files and directories) that match the specified pattern. 
+                  It's a synchronous method, meaning it blocks until it completes.
+
+      whereType<File>(): This is a filtering step. It filters the list of file system entities to only include those that are of type File. 
+                        It ensures that only files, not directories, are included in the result.
+
+      map((file) => file.path): This maps each File object to its path. 
+                    It transforms the list of File objects into a list of strings representing their paths.
+  */
   Future<String> _getAnalyzedMessage() async {
     var pattern = Glob('../**.dart');
     if (path != null) {
       pattern = Glob('$path$_suffixPath');
     }
-    /**
-     * What does the one line command execute ?
-        pattern: This is an instance of the Glob class from the glob package. 
-                It represents a pattern for matching file paths.
-
-        listSync(): This method is called on the Glob instance (pattern) and returns a list of file system entities (files and directories) that match the specified pattern. 
-                    It's a synchronous method, meaning it blocks until it completes.
-
-        whereType<File>(): This is a filtering step. It filters the list of file system entities to only include those that are of type File. 
-                          It ensures that only files, not directories, are included in the result.
-
-        map((file) => file.path): This maps each File object to its path. 
-                      It transforms the list of File objects into a list of strings representing their paths.
-    */
     var filePathList =
         pattern.listSync().whereType<File>().map((file) => file.path);
-    final args = ['analyze', ...filePathList];
-    final analyzeRes = await Process.run('dart', args);
-    final res =
-        _grepKeyword(content: analyzeRes.stdout, keyWord: 'unused_import');
+    var res = '';
+    for (final filePath in filePathList) {
+      final args = ['analyze', filePath];
+      final analyzeRes = await Process.run('dart', args);
+      res += _grepKeyword(
+          content: analyzeRes.stdout,
+          keyWord: 'unused_import',
+          fullPath: filePath);
+    }
     return res;
   }
 
-  String _grepKeyword({required String content, required String keyWord}) {
+  String _grepKeyword(
+      {required String content,
+      required String keyWord,
+      required String fullPath}) {
     final strLines = LineSplitter.split(content).toList();
     final resList = strLines.where((it) => it.contains('unused_import'));
     String res = '';
     resList.forEach((it) {
-      res = res + '$it\n';
+      var relativePath = it.split(' ')[_filePathIndex];
+      final keyword = it.replaceFirst(relativePath, fullPath);
+      res = res + '$keyword\n';
     });
     return res;
   }
 
   List<Map<String, dynamic>> _getImportMapList(String message) {
-    const filePathIndex = 2;
-    const packagePathIndex = 6;
-    final messageLines = message.split("\n");
-    messageLines.removeLast();
+    final messageLines = message.split("\n")..removeLast();
 
     final List<Map<String, dynamic>> unusedImportMapList = [];
 
@@ -79,20 +88,19 @@ class MessageHandler {
 
     for (var messageLine in messageLines) {
       final represent = messageLine.split(' ');
-      final filePath = _shapeFilePath(filePath: represent[filePathIndex]);
+      final filePath = represent[_filePathIndex];
       if (previousFilePath == filePath) {
         packagePathList
-            .add(_shapePackagePath(packagePath: represent[packagePathIndex]));
+            .add(_shapePackagePath(packagePath: represent[_packagePathIndex]));
       } else {
         if (previousFilePath.isNotEmpty) {
           unusedImportMapList.add(
               {'filePath': previousFilePath, 'packagePath': packagePathList});
-          packagePathList = [];
-          packagePathList
-              .add(_shapePackagePath(packagePath: represent[packagePathIndex]));
+          packagePathList = []
+            ..add(_shapePackagePath(packagePath: represent[_packagePathIndex]));
         } else {
           //For add initialize list
-          packagePathList.add(represent[packagePathIndex]);
+          packagePathList.add(represent[_packagePathIndex]);
         }
       }
       previousFilePath = filePath;
@@ -102,10 +110,6 @@ class MessageHandler {
     unusedImportMapList
         .add({'filePath': lastFilePath, 'packagePath': lastPackagePathList});
     return unusedImportMapList;
-  }
-
-  String _shapeFilePath({required String filePath}) {
-    return filePath.substring(0, filePath.indexOf(':'));
   }
 
   String _shapePackagePath({required String packagePath}) {
