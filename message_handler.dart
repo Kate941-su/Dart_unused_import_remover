@@ -5,23 +5,32 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 import 'dart:convert';
 
+const String _suffixPath = '/**/*.dart';
+
 class MessageHandler {
+  String? path;
+
+  MessageHandler({this.path});
+
   Future<String> getOriginalAnalyzeMessage() async {
-    var pattern = Glob('*.dart');
-/**
- * What does the one line command execute ?
-pattern: This is an instance of the Glob class from the glob package. 
-         It represents a pattern for matching file paths.
+    var pattern = Glob('../$_suffixPath');
+    if (path != null) {
+      pattern = Glob('$path' + '$_suffixPath');
+    }
+    /**
+     * What does the one line command execute ?
+        pattern: This is an instance of the Glob class from the glob package. 
+                It represents a pattern for matching file paths.
 
-listSync(): This method is called on the Glob instance (pattern) and returns a list of file system entities (files and directories) that match the specified pattern. 
-            It's a synchronous method, meaning it blocks until it completes.
+        listSync(): This method is called on the Glob instance (pattern) and returns a list of file system entities (files and directories) that match the specified pattern. 
+                    It's a synchronous method, meaning it blocks until it completes.
 
-whereType<File>(): This is a filtering step. It filters the list of file system entities to only include those that are of type File. 
-                   It ensures that only files, not directories, are included in the result.
+        whereType<File>(): This is a filtering step. It filters the list of file system entities to only include those that are of type File. 
+                          It ensures that only files, not directories, are included in the result.
 
-map((file) => file.path): This maps each File object to its path. 
-              It transforms the list of File objects into a list of strings representing their paths.
- */
+        map((file) => file.path): This maps each File object to its path. 
+                      It transforms the list of File objects into a list of strings representing their paths.
+    */
     var filePathList =
         pattern.listSync().whereType<File>().map((file) => file.path);
     final args = ['analyze', ...filePathList];
