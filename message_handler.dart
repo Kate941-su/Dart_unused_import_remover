@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 import 'dart:convert';
 
+import 'progress.dart';
+
 const String _suffixPath = '/**.dart';
 const int _filePathIndex = 2;
 const int _packagePathIndex = 6;
@@ -52,6 +54,7 @@ class MessageHandler {
     var res = '';
     final fileCount = filePathList.length;
     var count = 0;
+    print('Searching unused import statements 👀');
     for (final filePath in filePathList) {
       final args = ['analyze', filePath];
       final analyzeRes = await Process.run('dart', args);
@@ -60,7 +63,7 @@ class MessageHandler {
           keyWord: 'unused_import',
           fullPath: filePath);
       count += 1;
-      print('finish checking files ($count/$fileCount)');
+      showProgress(progressCount: count, totalCount: fileCount);
     }
     return res;
   }
