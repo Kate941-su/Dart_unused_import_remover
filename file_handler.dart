@@ -1,4 +1,3 @@
-import 'test_data.dart';
 import 'dart:io';
 import 'dart:convert';
 
@@ -33,19 +32,5 @@ class FileHandler {
       return importStatement.substring(0, importStatement.length - 1);
     }
     return importStatement;
-  }
-
-  // test methods
-  void testRemoveLinesFromFile() {
-    for (Map<String, dynamic> testMap in testMapList) {
-      final filePath = testMap['filePath']!;
-      print('💪start $filePath💪');
-      File file = File(filePath);
-      String fileContent = file.readAsStringSync();
-      for (final packagePath in testMap['packagePath']!) {
-        fileContent = _getRemoveImportStatement(fileContent, packagePath);
-      }
-      file.writeAsStringSync(fileContent);
-    }
   }
 }

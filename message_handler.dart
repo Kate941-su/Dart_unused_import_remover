@@ -1,6 +1,4 @@
 import 'package:glob/list_local_fs.dart';
-
-import 'test_data.dart';
 import 'dart:io';
 import 'package:glob/glob.dart';
 import 'dart:convert';
@@ -112,13 +110,5 @@ class MessageHandler {
 
   String _shapePackagePath({required String packagePath}) {
     return packagePath.substring(0, packagePath.length - 1);
-  }
-
-  // test methods
-  void testCreateMessage() {
-    final unusedImportMapList = _getImportMapList(sampleUnusedMessage);
-    for (final line in unusedImportMapList) {
-      print(line);
-    }
   }
 }
