@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'message_handler.dart';
 import 'file_handler.dart';
 import 'file_handler.dart';
@@ -15,7 +17,7 @@ void main(List<String> args) async {
   }
   // final res = await messageHandler.getAnalyzedMessage();
   final res = await messageHandler.createUnusedMapList();
-  print('remove.dart::result : $res');
-  // FileHandler().testRemoveLinesFromFile();
-  // MessageHandler().testCreateMessage();
+  print('remove.dart::createdUnusedMapList() : $res');
+
+  // FileHandler().removeLinesFromFile(unusedImportMapList: res);
 }

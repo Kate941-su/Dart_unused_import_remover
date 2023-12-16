@@ -13,12 +13,12 @@ class MessageHandler {
   MessageHandler({this.path});
 
   Future<List> createUnusedMapList() async {
-    final analyzedMessage = await getAnalyzedMessage();
+    final analyzedMessage = await _getAnalyzedMessage();
     final unusedImportMapList = _getImportMapList(analyzedMessage);
     return unusedImportMapList;
   }
 
-  Future<String> getAnalyzedMessage() async {
+  Future<String> _getAnalyzedMessage() async {
     var pattern = Glob('../$_suffixPath');
     if (path != null) {
       pattern = Glob('$path' + '$_suffixPath');
@@ -43,6 +43,8 @@ class MessageHandler {
     final analyzeRes = await Process.run('dart', args);
     final res =
         _grepKeyword(content: analyzeRes.stdout, keyWord: 'unused_import');
+    print('message_handler.dart::_getAnalyzedPath()');
+    print(res);
     return res;
   }
 
@@ -84,7 +86,7 @@ class MessageHandler {
               .add(_shapePackagePath(packagePath: represent[packagePathIndex]));
         } else {
           //For add initialize list
-          packagePathList.add(filePath);
+          packagePathList.add(represent[packagePathIndex]);
         }
       }
       previousFilePath = filePath;
@@ -93,6 +95,7 @@ class MessageHandler {
     }
     unusedImportMapList
         .add({'filePath': lastFilePath, 'packagePath': lastPackagePathList});
+    print('remove.dart::createdUnusedMapList() : $unusedImportMapList');
     return unusedImportMapList;
   }
 
