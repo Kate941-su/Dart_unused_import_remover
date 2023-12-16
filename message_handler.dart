@@ -65,6 +65,7 @@ class MessageHandler {
       count += 1;
       showProgress(progressCount: count, totalCount: fileCount);
     }
+    print('\nFinish searching 🎉');
     return res;
   }
 
