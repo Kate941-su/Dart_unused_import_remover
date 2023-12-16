@@ -18,6 +18,16 @@ class MessageHandler {
     return unusedImportMapList;
   }
 
+  bool hasRemovingLine(List unusedImportMapList) {
+    if (unusedImportMapList.isEmpty) {
+      return false;
+    } else if (unusedImportMapList.length == 1 &&
+        unusedImportMapList[0]['filePath'].isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   Future<String> _getAnalyzedMessage() async {
     var pattern = Glob('../**.dart');
     if (path != null) {
@@ -39,14 +49,10 @@ class MessageHandler {
     */
     var filePathList =
         pattern.listSync().whereType<File>().map((file) => file.path);
-
-    print('All found filefPathList 👉 : $filePathList');
     final args = ['analyze', ...filePathList];
     final analyzeRes = await Process.run('dart', args);
     final res =
         _grepKeyword(content: analyzeRes.stdout, keyWord: 'unused_import');
-
-    print(res);
     return res;
   }
 
@@ -97,7 +103,6 @@ class MessageHandler {
     }
     unusedImportMapList
         .add({'filePath': lastFilePath, 'packagePath': lastPackagePathList});
-    print('remove.dart::createdUnusedMapList() : $unusedImportMapList');
     return unusedImportMapList;
   }
 

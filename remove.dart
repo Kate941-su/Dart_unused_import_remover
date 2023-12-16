@@ -1,10 +1,5 @@
 import 'message_handler.dart';
 import 'file_handler.dart';
-import 'file_handler.dart';
-import 'file_handler.dart';
-import 'file_handler.dart';
-import 'file_handler.dart';
-import 'file_handler.dart';
 
 void main(List<String> args) async {
   MessageHandler messageHandler;
@@ -15,6 +10,10 @@ void main(List<String> args) async {
   }
   // final res = await messageHandler.getAnalyzedMessage();
   final res = await messageHandler.createUnusedMapList();
-  // final fileHandler = FileHandler();
-  // fileHandler.removeLinesFromFile(unusedImportMapList: res);
+  if (messageHandler.hasRemovingLine(res)) {
+    final fileHandler = FileHandler();
+    fileHandler.removeLinesFromFile(unusedImportMapList: res);
+  } else {
+    print('Your project has no unused package statement. Awesome!!');
+  }
 }
