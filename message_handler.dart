@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 import 'dart:convert';
 
-const String _suffixPath = '/**/*.dart';
+const String _suffixPath = '/**.dart';
 
 class MessageHandler {
   String? path;
@@ -19,9 +19,9 @@ class MessageHandler {
   }
 
   Future<String> _getAnalyzedMessage() async {
-    var pattern = Glob('../$_suffixPath');
+    var pattern = Glob('../**.dart');
     if (path != null) {
-      pattern = Glob('$path' + '$_suffixPath');
+      pattern = Glob('$path$_suffixPath');
     }
     /**
      * What does the one line command execute ?
@@ -39,11 +39,13 @@ class MessageHandler {
     */
     var filePathList =
         pattern.listSync().whereType<File>().map((file) => file.path);
+
+    print('All found filefPathList 👉 : $filePathList');
     final args = ['analyze', ...filePathList];
     final analyzeRes = await Process.run('dart', args);
     final res =
         _grepKeyword(content: analyzeRes.stdout, keyWord: 'unused_import');
-    print('message_handler.dart::_getAnalyzedPath()');
+
     print(res);
     return res;
   }
