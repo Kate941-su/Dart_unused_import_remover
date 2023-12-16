@@ -50,6 +50,8 @@ class MessageHandler {
     var filePathList =
         pattern.listSync().whereType<File>().map((file) => file.path);
     var res = '';
+    final fileCount = filePathList.length;
+    var count = 0;
     for (final filePath in filePathList) {
       final args = ['analyze', filePath];
       final analyzeRes = await Process.run('dart', args);
@@ -57,6 +59,8 @@ class MessageHandler {
           content: analyzeRes.stdout,
           keyWord: 'unused_import',
           fullPath: filePath);
+      count += 1;
+      print('finish checking files ($count/$fileCount)');
     }
     return res;
   }
