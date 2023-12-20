@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:unused_import_remover/unused_remover.dart';
+import 'package:unused_import_remover/unused_import_remover.dart';
 import 'dart:io';
 
 const _idealString = 'No issues found!';
