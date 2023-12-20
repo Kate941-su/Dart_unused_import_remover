@@ -3,6 +3,7 @@ name: unused_import_remover
 description: A tool to remove unused import packages automatically.
 version: 1.0.0
 
+homepage: https://github.com/Kate941-su
 # You have to explicit sdk version.
 environment:
   sdk: '^3.1.0'
