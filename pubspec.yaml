@@ -1,5 +1,7 @@
 # You must to set name and define package name as connecting under score!
 name: unused_import_remover
+description: A tool to remove unused import packages automatically.
+version: 1.0.0
 
 # You have to explicit sdk version.
 environment:
