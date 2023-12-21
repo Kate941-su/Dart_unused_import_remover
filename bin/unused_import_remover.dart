@@ -1,5 +1,5 @@
-import 'src/message_handler.dart';
-import 'src/file_handler.dart';
+import 'lib/file_handler.dart';
+import 'lib/message_handler.dart';
 
 void main(List<String> args) async {
   await executeRemove(args);
