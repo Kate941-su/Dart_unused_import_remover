@@ -15,20 +15,25 @@ and the Flutter guide for
 
 ## Abstraction
 
-When you or your team develop huge project used Flutter or Dart, it sometimes happens that many dart files have `unused import` and output warning messages by `Dart Analysis`.
+When you or your team develop a huge project using Flutter or Dart, it sometimes happens that many Dart files have `unused import` and output warning messages by `Dart Analysis`.
 
-If you feel it annoying, use `unused_import_remover` package, which helps you such a annoying problem.
+If you feel it is annoying, use the `unused_import_remover` package, which helps you with such an annoying problem.
 
 ## Features
 
-You can choose the directory you want to remove unimport package. And you execute the below command.
+You can choose the directory in which you want to remove the unimportant package. you execute the below command.
+
+```
+dart pub run unused_import_remover
+```
+
 That's all!
 
-After you have executed the command, `unused_import_remover` checks all dart files under the direcotry you selected recurcively, finds unused import package -> remove!!
+After you have executed the command, `unused_import_remover` checks all dart files under the directory you selected recursively, finds unused import package -> remove!!
 
-You can get the benefits. Example is written below.
+You can get the benefits. An example is written below.
 
-Before you execute `unused_import_remover` command
+**Before**
 
 ```
 import 'dart:async';
@@ -38,18 +43,16 @@ import 'dart:collection';
 class Test1{}
 ```
 
-After you have executed `unused_import_remover` command
+**After**
 
 ```
-/*
-Remove unused imported packages automatically !
-*/
+
 class Test1{}
 ```
 
-## Getting started
+## Installation
 
-1. add `unused_import_remover` package in your project
+add `unused_import_remover` package in your project
 
 ```
 dart pub add dev:unused_import_remover
@@ -58,7 +61,39 @@ dart pub add dev:unused_import_remover
 ## Usage
 
 ```dart
-dart pub unused_import_remover *DIRECTORY_PATH*
+dart pub run unused_import_remover *DIRECTORY_PATH*
 ```
 
 ## Additional information
+
+Ensure that you have to set _DRECTORY_PATH_, not _FILE_PATH_
+
+Correct
+
+```
+dart pub run unused_import_remover ./
+```
+
+```
+dart pub run unused_import_remover ./*DIRECTORY_NAME*/
+```
+
+You don't have to pub last `/`.
+
+```
+dart pub run unused_import_remover ./*DIRECTORY_NAME*
+```
+
+Incorrect
+
+```
+dart pub run unused_import_remover ./*.dart
+```
+
+```
+dart pub run unused_import_remover ./*.dart
+```
+
+```
+dart pub run unused_import_remover ./specific_file.dart
+```
