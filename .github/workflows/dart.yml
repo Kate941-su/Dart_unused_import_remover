@@ -1,0 +1,27 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart Integration Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-lates
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1.4
+      - name: Install dependencies
+        run: dart pub get
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+      - name: Analyze project source
+        run: dart analuze --fatal-infos
+      - name: Run tests
+        run: dart test
